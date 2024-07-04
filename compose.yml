@@ -1,0 +1,9 @@
+services:
+  devops-toolkit:
+    image: tungbq/devops-toolkit:latest
+    volumes:
+      - .:/root
+    platform: linux/amd64
+    command: tail -f /dev/null
+    env_file:
+      - .env
