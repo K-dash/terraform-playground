@@ -1,16 +1,22 @@
+terraform {
+    # tfstateファイル格納先のリモートストレージ設定
+    backend "s3" {
+        key = "stage/services/webserver-cluster/terraform.tfstate"
+    }
+}
+
 provider "aws" {
     region = "us-east-2"
 }
 
-variable "server_port" {
-    description = "The port the server will use for HTTP requests"
-    type = number
-    default = 8080
-}
-
-output "alb_dns_name" {
-    value = aws_lb.example.dns_name
-    description = "The domain name of the load balancer"
+# DBのstateファイルから情報を取得する
+data "terraform_remote_state" "db" {
+    backend = "s3"
+    config = {
+        bucket = "terraform-state-remote-storage-s3-for-kdash"
+        key = "stage/data-stores/mysql/terraform.tfstate"
+        region = "us-east-2"
+    }
 }
 
 # 起動設定
@@ -19,11 +25,12 @@ resource "aws_launch_configuration" "example" {
     instance_type = "t2.micro"
     security_groups = [aws_security_group.instance.id]
     
-    user_data = <<-EOF
-                #!/bin/bash
-                echo "Hello, World" > index.html
-                nohup busybox httpd -f -p ${var.server_port} &
-                EOF
+    # ユーザーデータをテンプレートとしてレンダリング
+    user_data = templatefile("user-data.sh", {
+        server_port = var.server_port
+        db_address = data.terraform_remote_state.db.outputs.address
+        db_port = data.terraform_remote_state.db.outputs.port
+    })
 
     # Autoscaling Groupの起動設定の場合は必須
     lifecycle {
