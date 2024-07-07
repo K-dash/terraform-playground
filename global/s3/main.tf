@@ -1,9 +1,9 @@
-# terraform {
-#     # tfstateファイル格納先のリモートストレージ設定
-#     backend "s3" {
-#         key = "global/s3/terraform.tfstate"
-#     }
-# }
+terraform {
+    # tfstateファイル格納先のリモートストレージ設定
+    backend "s3" {
+        key = "global/s3/terraform.tfstate"
+    }
+}
 
 provider "aws" {
     region = "us-east-2"
