@@ -1,7 +1,7 @@
 terraform {
     # tfstateファイル格納先のリモートストレージ設定
     backend "s3" {
-        key = "stage/data-stores/mysql/terraform.tfstate"
+        key = "prod/data-stores/mysql/terraform.tfstate"
     }
 }
 
