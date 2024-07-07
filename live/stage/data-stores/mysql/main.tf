@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 module "mysql" {
-    source = "../../../modules/data-stores/mysql"
+    source = "github.com/K-dash/terraform-playground-modules//data-stores/mysql?ref=v0.0.1"
     db_password = var.db_password
     db_username = var.db_username
     instance_type = "db.t3.micro"
