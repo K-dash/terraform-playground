@@ -11,7 +11,7 @@ provider "aws" {
 
 
 module "webserver_cluster" {
-    source = "github.com/K-dash/terraform-playground-modules//services/webserver-cluster?ref=v0.0.1"
+    source = "github.com/K-dash/terraform-playground-modules//services/webserver-cluster?ref=v0.0.3"
 
     cluster_name = "webservers-prod"
     db_remote_state_bucket = "terraform-state-remote-storage-s3-for-kdash"
@@ -20,6 +20,10 @@ module "webserver_cluster" {
     instance_type = "t2.micro"
     min_size = 2
     max_size = 10
+    custom_tags = {
+        Owner = "K-dash"
+        DeployedBy = "Terraform"
+    }
 }
 
 resource "aws_autoscaling_schedule" "schedule_out_during_business_hours" {
