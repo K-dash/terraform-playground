@@ -10,7 +10,10 @@ provider "aws" {
 }
 
 module "webserver_cluster" {
-    source = "github.com/K-dash/terraform-playground-modules//services/webserver-cluster?ref=v0.0.1"
+    source = "github.com/K-dash/terraform-playground-modules//services/webserver-cluster?ref=v0.0.6b"
+
+    ami = "ami-0fb653ca2d3203ac1"
+    server_text = "foo bar"
 
     cluster_name = "webservers-stage"
     db_remote_state_bucket = "terraform-state-remote-storage-s3-for-kdash"
@@ -19,6 +22,7 @@ module "webserver_cluster" {
     instance_type = "t2.micro"
     min_size = 2
     max_size = 2
+    enable_auto_scaling = false
 }
 
 # moduleのoutputを利用してalbのsecurity_groupにルールを追加
